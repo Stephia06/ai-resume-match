@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { parseResumeFile } from "@/lib/parseResume";
 import { analyzeResume } from "@/server/analyze.functions";
 import { ScoreRing } from "@/components/app/ScoreRing";
 
@@ -31,6 +30,7 @@ function Index() {
   const handleFile = async (file: File) => {
     setParsing(true);
     try {
+      const { parseResumeFile } = await import("@/lib/parseResume");
       const text = await parseResumeFile(file);
       if (text.length < 50) throw new Error("Could not extract enough text from this file.");
       setResumeText(text);
