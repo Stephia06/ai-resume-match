@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { runAtsAnalysis } from "@/lib/ai-analyze.server";
+import type { Json } from "@/integrations/supabase/types";
 
 // ----- Profile / role -----
 export const getMe = createServerFn({ method: "GET" })
@@ -148,7 +149,7 @@ export const submitApplication = createServerFn({ method: "POST" })
       matched_keywords: report.matchedKeywords ?? [],
       missing_keywords: report.missingKeywords ?? [],
       verdict: report.verdict,
-      report: report as unknown as Record<string, unknown>,
+      report: report as unknown as Json,
       status: "pending" as const,
     };
 
