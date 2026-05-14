@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { analyzeResume } from "@/server/analyze.functions";
 import { ScoreRing } from "@/components/app/ScoreRing";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -77,6 +78,12 @@ function Index() {
         <Badge variant="outline" className="hidden sm:inline-flex border-primary/40 text-primary">
           AI-Powered ATS
         </Badge>
+        <div className="flex items-center gap-2 ml-auto">
+          <Link to="/login"><Button variant="ghost" size="sm">Sign in</Button></Link>
+          <Link to="/signup">
+            <Button size="sm" style={{ background: "var(--gradient-primary)" }}>Get started</Button>
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}
