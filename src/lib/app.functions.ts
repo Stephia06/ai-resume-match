@@ -154,7 +154,7 @@ export const submitApplication = createServerFn({ method: "POST" })
 
     const { data: app, error } = await supabase
       .from("applications")
-      .upsert(payload, { onConflict: "job_id,candidate_id" })
+      .upsert([payload], { onConflict: "job_id,candidate_id" })
       .select("id")
       .single();
     if (error) throw new Error(error.message);
