@@ -9,11 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedHrIndexRouteImport } from './routes/_authenticated/hr/index'
 import { Route as AuthenticatedCandidateIndexRouteImport } from './routes/_authenticated/candidate/index'
+import { Route as AuthenticatedCandidateApplicationsRouteImport } from './routes/_authenticated/candidate/applications'
+import { Route as AuthenticatedHrJobsNewRouteImport } from './routes/_authenticated/hr/jobs.new'
+import { Route as AuthenticatedHrJobsJobIdRouteImport } from './routes/_authenticated/hr/jobs.$jobId'
+import { Route as AuthenticatedHrApplicationsIdRouteImport } from './routes/_authenticated/hr/applications.$id'
+import { Route as AuthenticatedCandidateJobsJobIdRouteImport } from './routes/_authenticated/candidate/jobs.$jobId'
+import { Route as AuthenticatedCandidateApplicationsIdRouteImport } from './routes/_authenticated/candidate/applications.$id'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -28,51 +41,153 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedHrIndexRoute = AuthenticatedHrIndexRouteImport.update({
+  id: '/hr/',
+  path: '/hr/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCandidateIndexRoute =
   AuthenticatedCandidateIndexRouteImport.update({
     id: '/candidate/',
     path: '/candidate/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCandidateApplicationsRoute =
+  AuthenticatedCandidateApplicationsRouteImport.update({
+    id: '/candidate/applications',
+    path: '/candidate/applications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedHrJobsNewRoute = AuthenticatedHrJobsNewRouteImport.update({
+  id: '/hr/jobs/new',
+  path: '/hr/jobs/new',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedHrJobsJobIdRoute =
+  AuthenticatedHrJobsJobIdRouteImport.update({
+    id: '/hr/jobs/$jobId',
+    path: '/hr/jobs/$jobId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedHrApplicationsIdRoute =
+  AuthenticatedHrApplicationsIdRouteImport.update({
+    id: '/hr/applications/$id',
+    path: '/hr/applications/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCandidateJobsJobIdRoute =
+  AuthenticatedCandidateJobsJobIdRouteImport.update({
+    id: '/candidate/jobs/$jobId',
+    path: '/candidate/jobs/$jobId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCandidateApplicationsIdRoute =
+  AuthenticatedCandidateApplicationsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedCandidateApplicationsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/candidate/applications': typeof AuthenticatedCandidateApplicationsRouteWithChildren
   '/candidate/': typeof AuthenticatedCandidateIndexRoute
+  '/hr/': typeof AuthenticatedHrIndexRoute
+  '/candidate/applications/$id': typeof AuthenticatedCandidateApplicationsIdRoute
+  '/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
+  '/hr/applications/$id': typeof AuthenticatedHrApplicationsIdRoute
+  '/hr/jobs/$jobId': typeof AuthenticatedHrJobsJobIdRoute
+  '/hr/jobs/new': typeof AuthenticatedHrJobsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/candidate/applications': typeof AuthenticatedCandidateApplicationsRouteWithChildren
   '/candidate': typeof AuthenticatedCandidateIndexRoute
+  '/hr': typeof AuthenticatedHrIndexRoute
+  '/candidate/applications/$id': typeof AuthenticatedCandidateApplicationsIdRoute
+  '/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
+  '/hr/applications/$id': typeof AuthenticatedHrApplicationsIdRoute
+  '/hr/jobs/$jobId': typeof AuthenticatedHrJobsJobIdRoute
+  '/hr/jobs/new': typeof AuthenticatedHrJobsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/_authenticated/candidate/applications': typeof AuthenticatedCandidateApplicationsRouteWithChildren
   '/_authenticated/candidate/': typeof AuthenticatedCandidateIndexRoute
+  '/_authenticated/hr/': typeof AuthenticatedHrIndexRoute
+  '/_authenticated/candidate/applications/$id': typeof AuthenticatedCandidateApplicationsIdRoute
+  '/_authenticated/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
+  '/_authenticated/hr/applications/$id': typeof AuthenticatedHrApplicationsIdRoute
+  '/_authenticated/hr/jobs/$jobId': typeof AuthenticatedHrJobsJobIdRoute
+  '/_authenticated/hr/jobs/new': typeof AuthenticatedHrJobsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/candidate/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/candidate/applications'
+    | '/candidate/'
+    | '/hr/'
+    | '/candidate/applications/$id'
+    | '/candidate/jobs/$jobId'
+    | '/hr/applications/$id'
+    | '/hr/jobs/$jobId'
+    | '/hr/jobs/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/candidate'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/candidate/applications'
+    | '/candidate'
+    | '/hr'
+    | '/candidate/applications/$id'
+    | '/candidate/jobs/$jobId'
+    | '/hr/applications/$id'
+    | '/hr/jobs/$jobId'
+    | '/hr/jobs/new'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/signup'
+    | '/_authenticated/candidate/applications'
     | '/_authenticated/candidate/'
+    | '/_authenticated/hr/'
+    | '/_authenticated/candidate/applications/$id'
+    | '/_authenticated/candidate/jobs/$jobId'
+    | '/_authenticated/hr/applications/$id'
+    | '/_authenticated/hr/jobs/$jobId'
+    | '/_authenticated/hr/jobs/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -94,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/hr/': {
+      id: '/_authenticated/hr/'
+      path: '/hr'
+      fullPath: '/hr/'
+      preLoaderRoute: typeof AuthenticatedHrIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/candidate/': {
       id: '/_authenticated/candidate/'
       path: '/candidate'
@@ -101,15 +223,85 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCandidateIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/candidate/applications': {
+      id: '/_authenticated/candidate/applications'
+      path: '/candidate/applications'
+      fullPath: '/candidate/applications'
+      preLoaderRoute: typeof AuthenticatedCandidateApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/hr/jobs/new': {
+      id: '/_authenticated/hr/jobs/new'
+      path: '/hr/jobs/new'
+      fullPath: '/hr/jobs/new'
+      preLoaderRoute: typeof AuthenticatedHrJobsNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/hr/jobs/$jobId': {
+      id: '/_authenticated/hr/jobs/$jobId'
+      path: '/hr/jobs/$jobId'
+      fullPath: '/hr/jobs/$jobId'
+      preLoaderRoute: typeof AuthenticatedHrJobsJobIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/hr/applications/$id': {
+      id: '/_authenticated/hr/applications/$id'
+      path: '/hr/applications/$id'
+      fullPath: '/hr/applications/$id'
+      preLoaderRoute: typeof AuthenticatedHrApplicationsIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/candidate/jobs/$jobId': {
+      id: '/_authenticated/candidate/jobs/$jobId'
+      path: '/candidate/jobs/$jobId'
+      fullPath: '/candidate/jobs/$jobId'
+      preLoaderRoute: typeof AuthenticatedCandidateJobsJobIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/candidate/applications/$id': {
+      id: '/_authenticated/candidate/applications/$id'
+      path: '/$id'
+      fullPath: '/candidate/applications/$id'
+      preLoaderRoute: typeof AuthenticatedCandidateApplicationsIdRouteImport
+      parentRoute: typeof AuthenticatedCandidateApplicationsRoute
+    }
   }
 }
 
+interface AuthenticatedCandidateApplicationsRouteChildren {
+  AuthenticatedCandidateApplicationsIdRoute: typeof AuthenticatedCandidateApplicationsIdRoute
+}
+
+const AuthenticatedCandidateApplicationsRouteChildren: AuthenticatedCandidateApplicationsRouteChildren =
+  {
+    AuthenticatedCandidateApplicationsIdRoute:
+      AuthenticatedCandidateApplicationsIdRoute,
+  }
+
+const AuthenticatedCandidateApplicationsRouteWithChildren =
+  AuthenticatedCandidateApplicationsRoute._addFileChildren(
+    AuthenticatedCandidateApplicationsRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedCandidateApplicationsRoute: typeof AuthenticatedCandidateApplicationsRouteWithChildren
   AuthenticatedCandidateIndexRoute: typeof AuthenticatedCandidateIndexRoute
+  AuthenticatedHrIndexRoute: typeof AuthenticatedHrIndexRoute
+  AuthenticatedCandidateJobsJobIdRoute: typeof AuthenticatedCandidateJobsJobIdRoute
+  AuthenticatedHrApplicationsIdRoute: typeof AuthenticatedHrApplicationsIdRoute
+  AuthenticatedHrJobsJobIdRoute: typeof AuthenticatedHrJobsJobIdRoute
+  AuthenticatedHrJobsNewRoute: typeof AuthenticatedHrJobsNewRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCandidateApplicationsRoute:
+    AuthenticatedCandidateApplicationsRouteWithChildren,
   AuthenticatedCandidateIndexRoute: AuthenticatedCandidateIndexRoute,
+  AuthenticatedHrIndexRoute: AuthenticatedHrIndexRoute,
+  AuthenticatedCandidateJobsJobIdRoute: AuthenticatedCandidateJobsJobIdRoute,
+  AuthenticatedHrApplicationsIdRoute: AuthenticatedHrApplicationsIdRoute,
+  AuthenticatedHrJobsJobIdRoute: AuthenticatedHrJobsJobIdRoute,
+  AuthenticatedHrJobsNewRoute: AuthenticatedHrJobsNewRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -120,6 +312,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
