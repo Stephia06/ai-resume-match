@@ -83,7 +83,7 @@ const CreateJobSchema = z.object({
   title: z.string().trim().min(2).max(120),
   company: z.string().trim().min(1).max(120),
   description: z.string().trim().min(20).max(20000),
-  required_skills: z.array(z.string().trim().min(1).max(60)).max(40).default([]),
+  required_skills: z.array(z.string().trim().min(1).max(200)).max(40).default([]),
 });
 
 export const createJob = createServerFn({ method: "POST" })
