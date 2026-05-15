@@ -5,7 +5,7 @@ import { listMyApplications } from "@/lib/app.functions";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScoreRing } from "@/components/app/ScoreRing";
-import { FileText, Loader2 } from "lucide-react";
+import { FileText, Loader2, PartyPopper } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/candidate/applications")({
   component: MyApps,
@@ -31,10 +31,18 @@ function MyApps() {
           No applications yet. <Link to="/candidate" className="text-primary hover:underline">Browse jobs</Link>.
         </Card>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-4">
+          {apps.some((a) => a.status === "accepted") && (
+            <Card className="p-4 border-primary/40 bg-primary/10 flex items-center gap-3">
+              <PartyPopper className="h-6 w-6 text-primary" />
+              <p className="text-sm font-medium">
+                You've been shortlisted for {apps.filter((a) => a.status === "accepted").length} role(s)! 🎉
+              </p>
+            </Card>
+          )}
           {apps.map((a) => (
             <Link key={a.id} to="/candidate/applications/$id" params={{ id: a.id }}>
-              <Card className="p-4 flex items-center justify-between gap-4 hover:border-primary/50">
+              <Card className={`p-4 flex items-center justify-between gap-4 hover:border-primary/50 ${a.status === "accepted" ? "border-primary/50 bg-primary/5" : ""}`}>
                 <div className="flex items-center gap-4">
                   <ScoreRing score={a.match_score} label="Match" size={64} />
                   <div>
