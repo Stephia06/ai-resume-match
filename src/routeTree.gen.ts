@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedCandidateIndexRouteImport } from './routes/_authenticated/candidate/index'
+import { Route as AuthenticatedCandidateApplicationsRouteImport } from './routes/_authenticated/candidate/applications'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -40,17 +41,25 @@ const AuthenticatedCandidateIndexRoute =
     path: '/candidate/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCandidateApplicationsRoute =
+  AuthenticatedCandidateApplicationsRouteImport.update({
+    id: '/candidate/applications',
+    path: '/candidate/applications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/candidate/applications': typeof AuthenticatedCandidateApplicationsRoute
   '/candidate/': typeof AuthenticatedCandidateIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/candidate/applications': typeof AuthenticatedCandidateApplicationsRoute
   '/candidate': typeof AuthenticatedCandidateIndexRoute
 }
 export interface FileRoutesById {
@@ -59,19 +68,26 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/candidate/applications': typeof AuthenticatedCandidateApplicationsRoute
   '/_authenticated/candidate/': typeof AuthenticatedCandidateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/candidate/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/candidate/applications'
+    | '/candidate/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/candidate'
+  to: '/' | '/login' | '/signup' | '/candidate/applications' | '/candidate'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/candidate/applications'
     | '/_authenticated/candidate/'
   fileRoutesById: FileRoutesById
 }
@@ -119,14 +135,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCandidateIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/candidate/applications': {
+      id: '/_authenticated/candidate/applications'
+      path: '/candidate/applications'
+      fullPath: '/candidate/applications'
+      preLoaderRoute: typeof AuthenticatedCandidateApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCandidateApplicationsRoute: typeof AuthenticatedCandidateApplicationsRoute
   AuthenticatedCandidateIndexRoute: typeof AuthenticatedCandidateIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCandidateApplicationsRoute:
+    AuthenticatedCandidateApplicationsRoute,
   AuthenticatedCandidateIndexRoute: AuthenticatedCandidateIndexRoute,
 }
 
@@ -143,3 +169,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
