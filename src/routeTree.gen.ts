@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedCandidateIndexRouteImport } from './routes/_authenticated/candidate/index'
 import { Route as AuthenticatedCandidateApplicationsRouteImport } from './routes/_authenticated/candidate/applications'
+import { Route as AuthenticatedCandidateJobsJobIdRouteImport } from './routes/_authenticated/candidate/jobs.$jobId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -47,6 +48,12 @@ const AuthenticatedCandidateApplicationsRoute =
     path: '/candidate/applications',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCandidateJobsJobIdRoute =
+  AuthenticatedCandidateJobsJobIdRouteImport.update({
+    id: '/candidate/jobs/$jobId',
+    path: '/candidate/jobs/$jobId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/candidate/applications': typeof AuthenticatedCandidateApplicationsRoute
   '/candidate/': typeof AuthenticatedCandidateIndexRoute
+  '/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,6 +69,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/candidate/applications': typeof AuthenticatedCandidateApplicationsRoute
   '/candidate': typeof AuthenticatedCandidateIndexRoute
+  '/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,6 +79,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/candidate/applications': typeof AuthenticatedCandidateApplicationsRoute
   '/_authenticated/candidate/': typeof AuthenticatedCandidateIndexRoute
+  '/_authenticated/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,8 +89,15 @@ export interface FileRouteTypes {
     | '/signup'
     | '/candidate/applications'
     | '/candidate/'
+    | '/candidate/jobs/$jobId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/candidate/applications' | '/candidate'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/candidate/applications'
+    | '/candidate'
+    | '/candidate/jobs/$jobId'
   id:
     | '__root__'
     | '/'
@@ -89,6 +106,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/candidate/applications'
     | '/_authenticated/candidate/'
+    | '/_authenticated/candidate/jobs/$jobId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -142,18 +160,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCandidateApplicationsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/candidate/jobs/$jobId': {
+      id: '/_authenticated/candidate/jobs/$jobId'
+      path: '/candidate/jobs/$jobId'
+      fullPath: '/candidate/jobs/$jobId'
+      preLoaderRoute: typeof AuthenticatedCandidateJobsJobIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedCandidateApplicationsRoute: typeof AuthenticatedCandidateApplicationsRoute
   AuthenticatedCandidateIndexRoute: typeof AuthenticatedCandidateIndexRoute
+  AuthenticatedCandidateJobsJobIdRoute: typeof AuthenticatedCandidateJobsJobIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCandidateApplicationsRoute:
     AuthenticatedCandidateApplicationsRoute,
   AuthenticatedCandidateIndexRoute: AuthenticatedCandidateIndexRoute,
+  AuthenticatedCandidateJobsJobIdRoute: AuthenticatedCandidateJobsJobIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
