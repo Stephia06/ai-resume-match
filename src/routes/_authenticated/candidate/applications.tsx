@@ -67,5 +67,6 @@ function StatusBadge({ status }: { status: string }) {
     rejected: "bg-destructive/15 text-destructive border-destructive/40",
     pending: "bg-muted text-muted-foreground border-border",
   };
-  return <Badge variant="outline" className={map[status] ?? map.pending}>{status}</Badge>;
+  const label = status === "accepted" ? "Shortlisted" : status === "rejected" ? "Not selected" : "Under review";
+  return <Badge variant="outline" className={map[status] ?? map.pending}>{label}</Badge>;
 }
