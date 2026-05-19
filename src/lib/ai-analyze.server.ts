@@ -20,13 +20,6 @@ export async function runAtsAnalysis(resumeText: string, jobDescription: string)
   const lovableKey = process.env.LOVABLE_API_KEY;
   if (!openaiKey && !lovableKey) throw new Error("No AI provider key configured");
 
-  const useOpenAI = !!openaiKey;
-  const endpoint = useOpenAI
-    ? "https://api.openai.com/v1/chat/completions"
-    : "https://ai.gateway.lovable.dev/v1/chat/completions";
-  const apiKey = useOpenAI ? openaiKey! : lovableKey!;
-  const model = useOpenAI ? "gpt-4o-mini" : "google/gemini-2.5-flash";
-
   const systemPrompt = `You are an expert ATS (Applicant Tracking System) analyzer and career coach.
 Analyze the resume against the job description with rigor. Be honest, specific, and actionable.
 Return ONLY a JSON object via the tool call.`;
@@ -99,26 +92,44 @@ Return ONLY a JSON object via the tool call.`;
     },
   };
 
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      tools: [tool],
-      tool_choice: { type: "function", function: { name: "ats_report" } },
-    }),
+  const providers: { name: string; endpoint: string; key: string; model: string }[] = [];
+  if (openaiKey) providers.push({
+    name: "openai", endpoint: "https://api.openai.com/v1/chat/completions",
+    key: openaiKey, model: "gpt-4o-mini",
+  });
+  if (lovableKey) providers.push({
+    name: "lovable", endpoint: "https://ai.gateway.lovable.dev/v1/chat/completions",
+    key: lovableKey, model: "google/gemini-2.5-flash",
   });
 
-  if (!res.ok) {
-    if (res.status === 429) throw new Error("Rate limit exceeded. Please try again shortly.");
-    if (res.status === 402) throw new Error("AI credits exhausted. Add credits in Settings → Workspace → Usage.");
-    const t = await res.text();
-    console.error("AI gateway error", res.status, t);
-    throw new Error("AI analysis failed.");
+  let res: Response | null = null;
+  let lastErr = "";
+  for (const p of providers) {
+    res = await fetch(p.endpoint, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${p.key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: p.model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        tools: [tool],
+        tool_choice: { type: "function", function: { name: "ats_report" } },
+      }),
+    });
+    if (res.ok) break;
+    lastErr = await res.text();
+    console.error(`AI provider ${p.name} failed`, res.status, lastErr);
+    // Fall through to next provider on auth/quota errors
+    if (![401, 402, 403, 429, 500, 502, 503].includes(res.status)) break;
+    res = null;
+  }
+
+  if (!res || !res.ok) {
+    if (res?.status === 429) throw new Error("Rate limit exceeded. Please try again shortly.");
+    if (res?.status === 402) throw new Error("AI credits exhausted.");
+    throw new Error("AI analysis failed. Please check your AI provider key.");
   }
 
   const json = await res.json();
