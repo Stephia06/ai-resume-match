@@ -16,8 +16,16 @@ export type AtsReport = {
 };
 
 export async function runAtsAnalysis(resumeText: string, jobDescription: string): Promise<AtsReport> {
-  const apiKey = process.env.LOVABLE_API_KEY;
-  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+  const openaiKey = process.env.OPENAI_API_KEY;
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  if (!openaiKey && !lovableKey) throw new Error("No AI provider key configured");
+
+  const useOpenAI = !!openaiKey;
+  const endpoint = useOpenAI
+    ? "https://api.openai.com/v1/chat/completions"
+    : "https://ai.gateway.lovable.dev/v1/chat/completions";
+  const apiKey = useOpenAI ? openaiKey! : lovableKey!;
+  const model = useOpenAI ? "gpt-4o-mini" : "google/gemini-2.5-flash";
 
   const systemPrompt = `You are an expert ATS (Applicant Tracking System) analyzer and career coach.
 Analyze the resume against the job description with rigor. Be honest, specific, and actionable.
@@ -91,11 +99,11 @@ Return ONLY a JSON object via the tool call.`;
     },
   };
 
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
