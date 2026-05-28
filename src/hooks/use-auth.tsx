@@ -3,7 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "@tanstack/react-router";
 
-type Role = "candidate" | "hr" | null;
+type Role = "candidate" | "hr" | "admin" | null;
 
 type AuthCtx = {
   user: User | null;

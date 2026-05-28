@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Sparkles, LogOut, LayoutDashboard, Briefcase, FileText, PlusCircle } from "lucide-react";
+import { Sparkles, LogOut, LayoutDashboard, Briefcase, FileText, PlusCircle, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,11 @@ function AuthenticatedLayout() {
     { to: "/hr", label: "My Jobs", icon: Briefcase },
     { to: "/hr/jobs/new", label: "Post Job", icon: PlusCircle },
   ];
-  const links = role === "hr" ? hrLinks : candidateLinks;
+  const adminLinks = [
+    { to: "/admin", label: "All Users", icon: Shield },
+  ];
+  const links =
+    role === "admin" ? adminLinks : role === "hr" ? hrLinks : candidateLinks;
 
   return (
     <div className="min-h-screen" style={{ background: "var(--gradient-bg)" }}>

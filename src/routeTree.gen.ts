@@ -15,12 +15,14 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedHrIndexRouteImport } from './routes/_authenticated/hr/index'
 import { Route as AuthenticatedCandidateIndexRouteImport } from './routes/_authenticated/candidate/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedCandidateApplicationsRouteImport } from './routes/_authenticated/candidate/applications'
 import { Route as AuthenticatedHrJobsNewRouteImport } from './routes/_authenticated/hr/jobs.new'
 import { Route as AuthenticatedHrJobsJobIdRouteImport } from './routes/_authenticated/hr/jobs.$jobId'
 import { Route as AuthenticatedHrApplicationsIdRouteImport } from './routes/_authenticated/hr/applications.$id'
 import { Route as AuthenticatedCandidateJobsJobIdRouteImport } from './routes/_authenticated/candidate/jobs.$jobId'
 import { Route as AuthenticatedCandidateApplicationsIdRouteImport } from './routes/_authenticated/candidate/applications.$id'
+import { Route as AuthenticatedAdminUsersUserIdRouteImport } from './routes/_authenticated/admin/users.$userId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -52,6 +54,11 @@ const AuthenticatedCandidateIndexRoute =
     path: '/candidate/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCandidateApplicationsRoute =
   AuthenticatedCandidateApplicationsRouteImport.update({
     id: '/candidate/applications',
@@ -87,14 +94,22 @@ const AuthenticatedCandidateApplicationsIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedCandidateApplicationsRoute,
   } as any)
+const AuthenticatedAdminUsersUserIdRoute =
+  AuthenticatedAdminUsersUserIdRouteImport.update({
+    id: '/admin/users/$userId',
+    path: '/admin/users/$userId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/candidate/applications': typeof AuthenticatedCandidateApplicationsRouteWithChildren
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/candidate/': typeof AuthenticatedCandidateIndexRoute
   '/hr/': typeof AuthenticatedHrIndexRoute
+  '/admin/users/$userId': typeof AuthenticatedAdminUsersUserIdRoute
   '/candidate/applications/$id': typeof AuthenticatedCandidateApplicationsIdRoute
   '/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
   '/hr/applications/$id': typeof AuthenticatedHrApplicationsIdRoute
@@ -106,8 +121,10 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/candidate/applications': typeof AuthenticatedCandidateApplicationsRouteWithChildren
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/candidate': typeof AuthenticatedCandidateIndexRoute
   '/hr': typeof AuthenticatedHrIndexRoute
+  '/admin/users/$userId': typeof AuthenticatedAdminUsersUserIdRoute
   '/candidate/applications/$id': typeof AuthenticatedCandidateApplicationsIdRoute
   '/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
   '/hr/applications/$id': typeof AuthenticatedHrApplicationsIdRoute
@@ -121,8 +138,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/candidate/applications': typeof AuthenticatedCandidateApplicationsRouteWithChildren
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/candidate/': typeof AuthenticatedCandidateIndexRoute
   '/_authenticated/hr/': typeof AuthenticatedHrIndexRoute
+  '/_authenticated/admin/users/$userId': typeof AuthenticatedAdminUsersUserIdRoute
   '/_authenticated/candidate/applications/$id': typeof AuthenticatedCandidateApplicationsIdRoute
   '/_authenticated/candidate/jobs/$jobId': typeof AuthenticatedCandidateJobsJobIdRoute
   '/_authenticated/hr/applications/$id': typeof AuthenticatedHrApplicationsIdRoute
@@ -136,8 +155,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/candidate/applications'
+    | '/admin/'
     | '/candidate/'
     | '/hr/'
+    | '/admin/users/$userId'
     | '/candidate/applications/$id'
     | '/candidate/jobs/$jobId'
     | '/hr/applications/$id'
@@ -149,8 +170,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/candidate/applications'
+    | '/admin'
     | '/candidate'
     | '/hr'
+    | '/admin/users/$userId'
     | '/candidate/applications/$id'
     | '/candidate/jobs/$jobId'
     | '/hr/applications/$id'
@@ -163,8 +186,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/candidate/applications'
+    | '/_authenticated/admin/'
     | '/_authenticated/candidate/'
     | '/_authenticated/hr/'
+    | '/_authenticated/admin/users/$userId'
     | '/_authenticated/candidate/applications/$id'
     | '/_authenticated/candidate/jobs/$jobId'
     | '/_authenticated/hr/applications/$id'
@@ -223,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCandidateIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/candidate/applications': {
       id: '/_authenticated/candidate/applications'
       path: '/candidate/applications'
@@ -265,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCandidateApplicationsIdRouteImport
       parentRoute: typeof AuthenticatedCandidateApplicationsRoute
     }
+    '/_authenticated/admin/users/$userId': {
+      id: '/_authenticated/admin/users/$userId'
+      path: '/admin/users/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AuthenticatedAdminUsersUserIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -285,8 +324,10 @@ const AuthenticatedCandidateApplicationsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedCandidateApplicationsRoute: typeof AuthenticatedCandidateApplicationsRouteWithChildren
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedCandidateIndexRoute: typeof AuthenticatedCandidateIndexRoute
   AuthenticatedHrIndexRoute: typeof AuthenticatedHrIndexRoute
+  AuthenticatedAdminUsersUserIdRoute: typeof AuthenticatedAdminUsersUserIdRoute
   AuthenticatedCandidateJobsJobIdRoute: typeof AuthenticatedCandidateJobsJobIdRoute
   AuthenticatedHrApplicationsIdRoute: typeof AuthenticatedHrApplicationsIdRoute
   AuthenticatedHrJobsJobIdRoute: typeof AuthenticatedHrJobsJobIdRoute
@@ -296,8 +337,10 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCandidateApplicationsRoute:
     AuthenticatedCandidateApplicationsRouteWithChildren,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedCandidateIndexRoute: AuthenticatedCandidateIndexRoute,
   AuthenticatedHrIndexRoute: AuthenticatedHrIndexRoute,
+  AuthenticatedAdminUsersUserIdRoute: AuthenticatedAdminUsersUserIdRoute,
   AuthenticatedCandidateJobsJobIdRoute: AuthenticatedCandidateJobsJobIdRoute,
   AuthenticatedHrApplicationsIdRoute: AuthenticatedHrApplicationsIdRoute,
   AuthenticatedHrJobsJobIdRoute: AuthenticatedHrJobsJobIdRoute,
@@ -317,3 +360,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
