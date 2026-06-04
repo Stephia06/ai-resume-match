@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { analyzeResume } from "@/server/analyze.functions";
+import { analyzeResume } from "@/lib/analyze.functions";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { Link } from "@tanstack/react-router";
 
